@@ -6,6 +6,7 @@ pipeline {
 
     tools {
         nodejs 'nodejs'
+        dockerTool 'docker-tool'
     }
 
     triggers {
@@ -35,6 +36,10 @@ pipeline {
             steps {
                 sh 'npm test' //This is for testing the nodejs modules
             }
+        }
+        stage('Docker build and tag') {
+            sh 'docker build -t kolevnikolay87/mynodejsapp -f dockerfile2 .'
+            sh 'docker tag kolevnikolay87/mynodejsapp kolevnikolay87/mynodejsapp:${BUILD_NUMBER}'
         }
         stage('Deploy') {
            steps {
