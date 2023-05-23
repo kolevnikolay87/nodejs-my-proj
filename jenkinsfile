@@ -1,0 +1,28 @@
+pipeline {
+    agent {
+        label 'docker-slave'
+    }
+    
+    tools {
+        nodejs 'nodejs'
+    }
+    
+    stages {
+        stage('CloneRepo') {
+            steps {
+                git branch: 'main', changelog: false, poll: false, url: 'https://github.com/kolevnikolay87/nodejs-my-proj.git'
+            }
+        }
+        stage('Build') {
+            steps {
+                sh 'npm ci'
+            }
+        }
+        stage('Test') {
+            steps {
+                sh 'npm test'
+            }
+        }
+    }
+}
+
