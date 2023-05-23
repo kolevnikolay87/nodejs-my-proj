@@ -23,6 +23,11 @@ pipeline {
                 sh 'npm test'
             }
         }
+        stage('Deployment') {
+            steps {
+                sh 'forever start src/index.js'
+            }
+        }
     }
 }
 
