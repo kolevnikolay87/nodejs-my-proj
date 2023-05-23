@@ -1,5 +1,7 @@
 pipeline {
 
+    IMAGE_NAME = 'kolevnikolay87/mynodejsapp'
+
     agent {
         label 'my-openssh-slave'
     }
@@ -11,6 +13,10 @@ pipeline {
 
     triggers {
         githubPush()
+    }
+
+    environment {
+        DOCKERHUB_CREDENTIALS = credentials('credentials-dockerhub')
     }
 
     stages {
@@ -37,10 +43,22 @@ pipeline {
                 sh 'npm test' //This is for testing the nodejs modules
             }
         }
+
+        stage('Docker Login') {
+            steps {
+                sh 'echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin'
+            }
+        }
+
         stage('Docker build and tag') {
             steps {
                 sh 'docker build -t kolevnikolay87/mynodejsapp -f dockerfile2 .'
                 sh 'docker tag kolevnikolay87/mynodejsapp kolevnikolay87/mynodejsapp:${BUILD_NUMBER}'
+            }
+        }
+        stage('Docker Push') {
+            steps {
+                sh 'docker push kolevnikolay87/mynodejsapp:${BUILD_NUMBER}'
             }
         }
         stage('Deploy') {
@@ -52,5 +70,3 @@ pipeline {
         }
     }
 }
-
-//this is for a test of the git integration
