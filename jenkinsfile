@@ -1,41 +1,41 @@
 pipeline {
+
     agent {
-        label 'docker-slave'
+        label '<your_label>'
     }
-    
+
     tools {
         nodejs 'nodejs'
     }
-    
+
     stages {
-        stage('CloneRepo') {
+
+        stage('Clean') {
             steps {
-                git branch: 'main', changelog: false, poll: false, url: 'https://github.com/kolevnikolay87/nodejs-my-proj.git'
+                cleanWs()
+            }
+        }
+
+        stage('Clone Repo') {
+            steps {
+                git branch: 'main', url: 'https://github.com/stoenpav/nodejs-my-proj.git'
             }
         }
         stage('Build') {
             steps {
-                sh 'npm install'
-                sh 'npm install -g forever'
-                sh 'npm ci'
+                sh 'npm ci' //This is for building the nodejs project
             }
         }
         stage('Test') {
             steps {
-                sh 'npm test'
+                sh 'npm test' //This is for testing the nodejs modules
             }
         }
-        stage('Deployment') {
-            steps {
+        stage('Deploy') {
+           steps {
+                sh 'npm install -g forever'
                 sh 'forever start src/index.js'
-            }
-        }
-    }
-    
-    post {
-        always {
-            cleanWs()
+           }
         }
     }
 }
-
