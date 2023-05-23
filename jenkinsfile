@@ -1,7 +1,5 @@
 pipeline {
 
-    IMAGE_NAME = 'kolevnikolay87/mynodejsapp'
-
     agent {
         label 'my-openssh-slave'
     }
