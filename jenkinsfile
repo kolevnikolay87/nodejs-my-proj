@@ -1,6 +1,6 @@
 pipeline {
     agent {
-        label 'my-openssh-slave'
+        label 'docker-slave'
     }
     
     tools {
